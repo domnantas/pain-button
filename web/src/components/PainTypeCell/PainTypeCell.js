@@ -5,6 +5,9 @@ export const QUERY = gql`
     painType: painType(id: $id) {
       id
       title
+      triggers {
+        triggeredAt
+      }
     }
   }
 `

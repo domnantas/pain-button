@@ -21,6 +21,5 @@ export const schema = gql`
   type Mutation {
     createPainType(input: CreatePainTypeInput!): PainType!
     updatePainType(id: Int!, input: UpdatePainTypeInput!): PainType!
-    deletePainType(id: Int!): PainType!
   }
 `

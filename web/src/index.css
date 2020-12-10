@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Creepster&display=swap');
+
+body {
+	background-color: #111;
+	color: #eee;
+	font-family: Creepster, sans-serif;
+	max-width: 1200px;
+	margin: 200px auto 0;
+	padding: 20px;
+	text-align: center;
+}
+
+h2 {
+	font-size: 32px;
+	letter-spacing: 4px;
+}
+
+@media (min-width: 900px) {
+	h2 {
+		font-size: 48px;
+	}
+}

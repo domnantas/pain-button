@@ -1,15 +1,6 @@
-import { useMutation, useFlash } from '@redwoodjs/web'
-import { Link, routes, navigate } from '@redwoodjs/router'
+import { Link, routes } from '@redwoodjs/router'
 
 import { QUERY } from 'src/components/PainTypesCell'
-
-const DELETE_PAIN_TYPE_MUTATION = gql`
-  mutation DeletePainTypeMutation($id: Int!) {
-    deletePainType(id: $id) {
-      id
-    }
-  }
-`
 
 const jsonDisplay = (obj) => {
   return (
@@ -32,20 +23,6 @@ const checkboxInputTag = (checked) => {
 }
 
 const PainType = ({ painType }) => {
-  const { addMessage } = useFlash()
-  const [deletePainType] = useMutation(DELETE_PAIN_TYPE_MUTATION, {
-    onCompleted: () => {
-      navigate(routes.painTypes())
-      addMessage('PainType deleted.', { classes: 'rw-flash-success' })
-    },
-  })
-
-  const onDeleteClick = (id) => {
-    if (confirm('Are you sure you want to delete painType ' + id + '?')) {
-      deletePainType({ variables: { id } })
-    }
-  }
-
   return (
     <>
       <div className="rw-segment">
@@ -64,6 +41,10 @@ const PainType = ({ painType }) => {
               <th>Title</th>
               <td>{painType.title}</td>
             </tr>
+            <tr>
+              <th>Triggers</th>
+              <td>{jsonDisplay(painType.triggers)}</td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -74,13 +55,6 @@ const PainType = ({ painType }) => {
         >
           Edit
         </Link>
-        <a
-          href="#"
-          className="rw-button rw-button-red"
-          onClick={() => onDeleteClick(painType.id)}
-        >
-          Delete
-        </a>
       </nav>
     </>
   )

@@ -12,10 +12,6 @@ import { Router, Route } from '@redwoodjs/router'
 const Routes = () => {
   return (
     <Router>
-      <Route path="/pain-triggers/new" page={NewPainTriggerPage} name="newPainTrigger" />
-      <Route path="/pain-triggers/{id:Int}/edit" page={EditPainTriggerPage} name="editPainTrigger" />
-      <Route path="/pain-triggers/{id:Int}" page={PainTriggerPage} name="painTrigger" />
-      <Route path="/pain-triggers" page={PainTriggersPage} name="painTriggers" />
       <Route path="/pain-types/new" page={NewPainTypePage} name="newPainType" />
       <Route path="/pain-types/{id:Int}/edit" page={EditPainTypePage} name="editPainType" />
       <Route path="/pain-types/{id:Int}" page={PainTypePage} name="painType" />

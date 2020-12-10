@@ -1,9 +1,9 @@
-import PainTypesCell from 'src/components/PainTypesCell'
+import PainCell from 'src/components/PainCell'
 
 const HomePage = () => {
   return (
     <>
-      <PainTypesCell />
+      <PainCell />
     </>
   )
 }

@@ -4,28 +4,15 @@ export const painTriggers = () => {
   return db.painTrigger.findMany()
 }
 
-export const painTrigger = ({ id }) => {
-  return db.painTrigger.findOne({
-    where: { id },
-  })
-}
-
 export const createPainTrigger = ({ input }) => {
   return db.painTrigger.create({
-    data: input,
-  })
-}
-
-export const updatePainTrigger = ({ id, input }) => {
-  return db.painTrigger.update({
-    data: input,
-    where: { id },
-  })
-}
-
-export const deletePainTrigger = ({ id }) => {
-  return db.painTrigger.delete({
-    where: { id },
+    data: {
+      pain: {
+        connect: {
+          id: input.painTypeId,
+        },
+      },
+    },
   })
 }
 

@@ -23,12 +23,6 @@ export const updatePainType = ({ id, input }) => {
   })
 }
 
-export const deletePainType = ({ id }) => {
-  return db.painType.delete({
-    where: { id },
-  })
-}
-
 export const PainType = {
   triggers: (_obj, { root }) =>
     db.painType.findOne({ where: { id: root.id } }).triggers(),
