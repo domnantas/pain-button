@@ -2,7 +2,6 @@ import { useMutation } from '@redwoodjs/web'
 import PainButton from 'src/components/PainButton/PainButton'
 import Words from 'src/components/Words'
 import Flashbang from 'src/components/Flashbang'
-import styles from './PainCell.module.css'
 import { useRef } from 'react'
 import styled from 'styled-components'
 
@@ -40,9 +39,15 @@ export const Failure = ({ error }) => (
   <TitleText>Error: {error.message}</TitleText>
 )
 
+const PainTypeContainer = styled.div`
+  &:not(:last-of-type) {
+    margin-bottom: 64px;
+  }
+`
+
 export const Success = ({ painTypes }) => {
   const [createPainTrigger] = useMutation(CREATE_PAIN_TRIGGER_MUTATION)
-  const [hovered, setHovered] = React.useState(true)
+  const [hovered, setHovered] = React.useState(false)
   const flashbangRef = useRef(null)
 
   return (
@@ -50,7 +55,7 @@ export const Success = ({ painTypes }) => {
       <Flashbang ref={flashbangRef} />
       {hovered && <Words>Pain</Words>}
       {painTypes.map((painType) => (
-        <div className={styles['pain-cell']} key={painType.id}>
+        <PainTypeContainer key={painType.id}>
           <TitleText>{painType.title}</TitleText>
           <PainButton
             onClick={() => {
@@ -65,8 +70,10 @@ export const Success = ({ painTypes }) => {
             onMouseLeave={() => {
               setHovered(false)
             }}
-          />
-        </div>
+          >
+            PAIN
+          </PainButton>
+        </PainTypeContainer>
       ))}
     </>
   )

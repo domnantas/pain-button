@@ -12,14 +12,15 @@ const flash = keyframes`
   }
 `
 
-const wordArray = new Array(80).fill().map((_, index) => {
+const wordArray = new Array(60).fill().map((_, index) => {
   return {
     color: colors[index % colors.length],
     x: Math.random() * 100,
     y: Math.random() * 100,
     rotate: Math.random() * 360,
-    scale: 0.4 + Math.random() * 1,
+    scale: 0.4 + Math.random() * 2,
     delay: Math.random() * 3,
+    duration: 0.8 + Math.random() * 2,
   }
 })
 
@@ -30,6 +31,8 @@ const WordsContainer = styled.div`
   width: 100%;
   height: 100%;
   z-index: -1;
+  overflow: hidden;
+  user-select: none;
 `
 const Word = styled.span`
   font-size: calc(64px * ${(props) => props.word.scale});
@@ -39,7 +42,8 @@ const Word = styled.span`
   left: ${(props) => props.word.x}%;
   opacity: 0;
   transform: rotate(${(props) => props.word.rotate}deg);
-  animation: ${flash} 1s ${(props) => props.word.delay}s ease-out infinite;
+  animation: ${flash} ${(props) => props.word.duration}s
+    ${(props) => props.word.delay}s ease-out infinite;
 `
 
 const Words = ({ children }) => {
