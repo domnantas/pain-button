@@ -1,0 +1,17 @@
+datasource DS {
+  // optionally set multiple providers
+  // example: provider = ["sqlite", "postgresql"]
+  provider = "postgresql"
+  url = "***"
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = "native"
+}
+
+model PainCount {
+  id    Int    @id @default(autoincrement())
+  title String
+  count Int
+}
