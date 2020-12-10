@@ -1,5 +1,5 @@
 import PainTypesLayout from 'src/layouts/PainTypesLayout'
-import PainTypeCell from 'src/components/PainTypeCell'
+import PainTypeCell from 'src/components/admin/PainTypeCell'
 
 const PainTypePage = ({ id }) => {
   return (

@@ -1,6 +1,6 @@
 import { Link, routes } from '@redwoodjs/router'
 
-import PainTypes from 'src/components/PainTypes'
+import PainTypes from 'src/components/admin/PainTypes'
 
 export const QUERY = gql`
   query PAIN_TYPES {

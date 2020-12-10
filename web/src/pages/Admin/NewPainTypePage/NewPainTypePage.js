@@ -1,5 +1,5 @@
 import PainTypesLayout from 'src/layouts/PainTypesLayout'
-import NewPainType from 'src/components/NewPainType'
+import NewPainType from 'src/components/admin/NewPainType'
 
 const NewPainTypePage = () => {
   return (

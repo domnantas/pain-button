@@ -1,8 +1,6 @@
 import { useMutation, useFlash } from '@redwoodjs/web'
 import { navigate, routes } from '@redwoodjs/router'
-import PainTypeForm from 'src/components/PainTypeForm'
-
-import { QUERY } from 'src/components/PainTypesCell'
+import PainTypeForm from 'src/components/admin/PainTypeForm'
 
 const CREATE_PAIN_TYPE_MUTATION = gql`
   mutation CreatePainTypeMutation($input: CreatePainTypeInput!) {

@@ -1,4 +1,4 @@
-import PainType from 'src/components/PainType'
+import PainType from 'src/components/admin/PainType'
 
 export const QUERY = gql`
   query FIND_PAIN_TYPE_BY_ID($id: Int!) {

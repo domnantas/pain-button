@@ -4,6 +4,7 @@ import Words from 'src/components/Words'
 import Flashbang from 'src/components/Flashbang'
 import styles from './PainCell.module.css'
 import { useRef } from 'react'
+import styled from 'styled-components'
 
 export const QUERY = gql`
   query PAIN_TYPES {
@@ -22,15 +23,26 @@ const CREATE_PAIN_TRIGGER_MUTATION = gql`
   }
 `
 
-export const Loading = () => <h2>Loading...</h2>
+const TitleText = styled.h2`
+  font-size: 32px;
+  letter-spacing: 4px;
 
-export const Empty = () => <h2>Empty</h2>
+  @media (min-width: 900px) {
+    font-size: 48px;
+  }
+`
 
-export const Failure = ({ error }) => <h2>Error: {error.message}</h2>
+export const Loading = () => <TitleText>Loading...</TitleText>
+
+export const Empty = () => <TitleText>Empty</TitleText>
+
+export const Failure = ({ error }) => (
+  <TitleText>Error: {error.message}</TitleText>
+)
 
 export const Success = ({ painTypes }) => {
   const [createPainTrigger] = useMutation(CREATE_PAIN_TRIGGER_MUTATION)
-  const [hovered, setHovered] = React.useState(false)
+  const [hovered, setHovered] = React.useState(true)
   const flashbangRef = useRef(null)
 
   return (
@@ -39,7 +51,7 @@ export const Success = ({ painTypes }) => {
       {hovered && <Words>Pain</Words>}
       {painTypes.map((painType) => (
         <div className={styles['pain-cell']} key={painType.id}>
-          <h2>{painType.title}</h2>
+          <TitleText>{painType.title}</TitleText>
           <PainButton
             onClick={() => {
               flashbangRef.current.flash()

@@ -1,6 +1,6 @@
 import { useMutation, useFlash } from '@redwoodjs/web'
 import { navigate, routes } from '@redwoodjs/router'
-import PainTypeForm from 'src/components/PainTypeForm'
+import PainTypeForm from 'src/components/admin/PainTypeForm'
 
 export const QUERY = gql`
   query FIND_PAIN_TYPE_BY_ID($id: Int!) {
