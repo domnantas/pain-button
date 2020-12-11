@@ -25,7 +25,7 @@ const wordArray = new Array(60).fill().map((_, index) => {
 })
 
 const WordsContainer = styled.div`
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;

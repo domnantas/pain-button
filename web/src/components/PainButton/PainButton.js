@@ -20,12 +20,6 @@ const PainButton = ({ children, ...props }) => {
       <Button
         whileHover={{ backgroundColor: '#c00', scale: 1.1 }}
         whileTap={{ scale: 5 }}
-        transition={{
-          type: 'spring',
-          duration: 0.4,
-          bounce: 0.4,
-          backgroundColor: { duration: 0 },
-        }}
         {...props}
       >
         {children}

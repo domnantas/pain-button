@@ -3,7 +3,7 @@ import { forwardRef, useImperativeHandle } from 'react'
 import styled from 'styled-components'
 
 const Flash = styled(motion.div)`
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;

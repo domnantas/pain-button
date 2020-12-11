@@ -3,7 +3,7 @@ import { createGlobalStyle } from 'styled-components'
 
 const GlobalStyle = createGlobalStyle`
   body {
-    margin: 100px auto 0;
+    margin: 60px auto 0;
     background-color: #111;
     color: #eee;
     font-family: Creepster, sans-serif;
@@ -14,7 +14,7 @@ const GlobalStyle = createGlobalStyle`
 
   @media (min-width: 900px) {
     body {
-      margin: 200px auto 0;
+      margin: 120px auto 0;
     }
   }
 `
