@@ -3,7 +3,7 @@ import { createGlobalStyle } from 'styled-components'
 
 const GlobalStyle = createGlobalStyle`
   body {
-    margin: 60px auto 0;
+    margin: 60px auto;
     background-color: #111;
     color: #eee;
     font-family: Creepster, sans-serif;
