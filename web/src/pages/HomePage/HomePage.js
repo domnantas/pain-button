@@ -14,7 +14,7 @@ const GlobalStyle = createGlobalStyle`
 
   @media (min-width: 900px) {
     body {
-      margin: 120px auto 0;
+      margin: 120px auto;
     }
   }
 `
