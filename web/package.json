@@ -13,9 +13,12 @@
     ]
   },
   "dependencies": {
+    "@nivo/core": "^0.67.0",
+    "@nivo/line": "^0.67.0",
     "@redwoodjs/forms": "^0.21.0",
     "@redwoodjs/router": "^0.21.0",
     "@redwoodjs/web": "^0.21.0",
+    "date-fns": "^2.16.1",
     "framer-motion": "^2.9.5",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
