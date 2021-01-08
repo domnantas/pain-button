@@ -1,6 +1,6 @@
 import { ResponsiveLine } from '@nivo/line'
 import styled from 'styled-components'
-import { format } from 'date-fns'
+import { format, eachDayOfInterval } from 'date-fns'
 
 export const QUERY = gql`
   query PainTriggersQuery {
@@ -26,6 +26,8 @@ const ChartWrapper = styled.div`
 `
 
 export const Success = ({ painTriggers }) => {
+  const startDate = new Date(painTriggers[0].triggeredAt)
+  const endDate = new Date(painTriggers[painTriggers.length - 1].triggeredAt)
   // Input
   // [
   //   {
@@ -101,21 +103,22 @@ export const Success = ({ painTriggers }) => {
   // ]
 
   const sumByDayTriggers = groupedByPainTriggers.map((triggerGroup) => {
-    const groupedByDateTriggers = triggerGroup.data
-      .map((trigger) => ({
-        ...trigger,
-        triggeredAt: format(new Date(trigger.triggeredAt), 'yyyy-MM-dd'),
-      }))
-      .reduce((groups, trigger) => {
-        const date = groups.find((group) => group.x === trigger.triggeredAt)
+    const allDays = eachDayOfInterval({
+      start: startDate,
+      end: endDate,
+    }).map((date) => format(date, 'yyyy-MM-dd'))
 
-        if (date) {
-          date.y += 1
-          return groups
-        }
+    const triggerGroupFormattedDates = triggerGroup.data.map((trigger) =>
+      format(new Date(trigger.triggeredAt), 'yyyy-MM-dd')
+    )
 
-        return [...groups, { x: trigger.triggeredAt, y: 1 }]
-      }, [])
+    const groupedByDateTriggers = allDays.map((currentDay) => {
+      const currentDayTriggerCount = triggerGroupFormattedDates.filter(
+        (triggerDate) => triggerDate === currentDay
+      ).length
+      return { x: currentDay, y: currentDayTriggerCount }
+    })
+
     return { ...triggerGroup, data: groupedByDateTriggers }
   })
 
@@ -125,6 +128,10 @@ export const Success = ({ painTriggers }) => {
   //     id: 'pain1',
   //     data: [
   //       {
+  //         x: '2020-12-11',
+  //         y: 0
+  //       },
+  //       {
   //         x: '2020-12-12',
   //         y: 2
   //       }
@@ -133,6 +140,14 @@ export const Success = ({ painTriggers }) => {
   //   {
   //     id: 'pain2',
   //     data: [
+  //       {
+  //         x: '2020-12-11',
+  //         y: 0
+  //       },
+  //       {
+  //         x: '2020-12-12',
+  //         y: 0
+  //       },
   //       {
   //         x: '2020-12-13',
   //         y: 1
@@ -144,7 +159,7 @@ export const Success = ({ painTriggers }) => {
   return (
     <ChartWrapper>
       <ResponsiveLine
-        margin={{ top: 50, right: 20, bottom: 50, left: 60 }}
+        margin={{ top: 50, right: 250, bottom: 50, left: 60 }}
         animate={true}
         enableSlices="x"
         data={sumByDayTriggers}
@@ -164,7 +179,34 @@ export const Success = ({ painTriggers }) => {
         }}
         curve={'monotoneX'}
         useMesh={true}
-        pointSize={10}
+        enablePoints={false}
+        lineWidth={4}
+        legends={[
+          {
+            anchor: 'bottom-right',
+            direction: 'column',
+            justify: false,
+            translateX: 100,
+            translateY: 0,
+            itemsSpacing: 0,
+            itemDirection: 'left-to-right',
+            itemWidth: 80,
+            itemHeight: 20,
+            itemOpacity: 0.75,
+            symbolSize: 12,
+            symbolShape: 'circle',
+            symbolBorderColor: 'rgba(0, 0, 0, .5)',
+            effects: [
+              {
+                on: 'hover',
+                style: {
+                  itemBackground: 'rgba(0, 0, 0, .03)',
+                  itemOpacity: 1,
+                },
+              },
+            ],
+          },
+        ]}
       />
     </ChartWrapper>
   )
