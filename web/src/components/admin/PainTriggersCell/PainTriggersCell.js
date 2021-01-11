@@ -160,6 +160,7 @@ export const Success = ({ painTriggers }) => {
     <ChartWrapper>
       <ResponsiveLine
         margin={{ top: 50, right: 250, bottom: 50, left: 60 }}
+        colors={{ scheme: 'category10' }}
         animate={true}
         enableSlices="x"
         data={sumByDayTriggers}
