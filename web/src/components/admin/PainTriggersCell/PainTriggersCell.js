@@ -26,8 +26,19 @@ const ChartWrapper = styled.div`
 `
 
 export const Success = ({ painTriggers }) => {
-  const startDate = new Date(painTriggers[0].triggeredAt)
-  const endDate = new Date(painTriggers[painTriggers.length - 1].triggeredAt)
+  console.log('painTriggers', painTriggers)
+
+  const sortedTriggers = [...painTriggers].sort(
+    (triggerA, triggerB) => triggerA.id - triggerB.id
+  )
+  console.log('sortedByIdTriggers', sortedTriggers)
+
+  const startDate = new Date(sortedTriggers[0].triggeredAt)
+  console.log('startDate', startDate)
+
+  const endDate = new Date(sortedTriggers[painTriggers.length - 1].triggeredAt)
+  console.log('endDate', endDate)
+
   // Input
   // [
   //   {
@@ -56,7 +67,9 @@ export const Success = ({ painTriggers }) => {
   //   }
   // ]
 
-  const groupedByPainTriggers = painTriggers
+  console.log('sortedByIdTriggers', sortedTriggers)
+
+  const groupedByPainTriggers = sortedTriggers
     .reduce((painGroups, trigger) => {
       // Probably could be refactored to use double reducer
       const painGroup = painGroups.find(
@@ -79,6 +92,8 @@ export const Success = ({ painTriggers }) => {
     .map((painGroup) => {
       return { id: painGroup.painTitle, data: painGroup.data }
     })
+  console.log('groupedByPainTriggers', groupedByPainTriggers)
+
   // Grouped output
   // [
   //   {
@@ -101,12 +116,13 @@ export const Success = ({ painTriggers }) => {
   //     ]
   //   }
   // ]
-
   const sumByDayTriggers = groupedByPainTriggers.map((triggerGroup) => {
     const allDays = eachDayOfInterval({
       start: startDate,
       end: endDate,
     }).map((date) => format(date, 'yyyy-MM-dd'))
+
+    console.log(startDate)
 
     const triggerGroupFormattedDates = triggerGroup.data.map((trigger) =>
       format(new Date(trigger.triggeredAt), 'yyyy-MM-dd')
@@ -121,6 +137,8 @@ export const Success = ({ painTriggers }) => {
 
     return { ...triggerGroup, data: groupedByDateTriggers }
   })
+
+  console.log('sumByDayTriggers', sumByDayTriggers)
 
   // Sum output
   // [
