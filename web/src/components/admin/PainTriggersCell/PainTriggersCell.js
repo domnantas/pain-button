@@ -67,8 +67,6 @@ export const Success = ({ painTriggers }) => {
   //   }
   // ]
 
-  console.log('sortedByIdTriggers', sortedTriggers)
-
   const groupedByPainTriggers = sortedTriggers
     .reduce((painGroups, trigger) => {
       // Probably could be refactored to use double reducer
@@ -116,24 +114,25 @@ export const Success = ({ painTriggers }) => {
   //     ]
   //   }
   // ]
+
   const sumByDayTriggers = groupedByPainTriggers.map((triggerGroup) => {
     const allDays = eachDayOfInterval({
       start: startDate,
       end: endDate,
     }).map((date) => format(date, 'yyyy-MM-dd'))
 
-    console.log(startDate)
-
     const triggerGroupFormattedDates = triggerGroup.data.map((trigger) =>
       format(new Date(trigger.triggeredAt), 'yyyy-MM-dd')
     )
 
-    const groupedByDateTriggers = allDays.map((currentDay) => {
-      const currentDayTriggerCount = triggerGroupFormattedDates.filter(
-        (triggerDate) => triggerDate === currentDay
-      ).length
-      return { x: currentDay, y: currentDayTriggerCount }
-    })
+    const groupedByDateTriggers = allDays
+      .map((currentDay) => {
+        const currentDayTriggerCount = triggerGroupFormattedDates.filter(
+          (triggerDate) => triggerDate === currentDay
+        ).length
+        return { x: currentDay, y: currentDayTriggerCount }
+      })
+      .filter((trigger) => trigger.y)
 
     return { ...triggerGroup, data: groupedByDateTriggers }
   })
