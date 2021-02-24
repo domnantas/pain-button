@@ -1,4 +1,5 @@
 import { ResponsiveLine } from '@nivo/line'
+import { TableTooltip } from '@nivo/tooltip'
 import styled from 'styled-components'
 import { format, eachDayOfInterval } from 'date-fns'
 
@@ -173,6 +174,17 @@ export const Success = ({ painTriggers }) => {
   //   }
   // ]
 
+  const Chip = ({ color }) => (
+    <span
+      style={{
+        display: 'block',
+        width: '12px',
+        height: '12px',
+        background: color,
+      }}
+    />
+  )
+
   return (
     <ChartWrapper>
       <ResponsiveLine
@@ -199,6 +211,22 @@ export const Success = ({ painTriggers }) => {
         useMesh={true}
         enablePoints={false}
         lineWidth={4}
+        sliceTooltip={({ slice, axis }) => {
+          const otherAxis = axis === 'x' ? 'y' : 'x'
+          console.log(slice)
+          return (
+            <TableTooltip
+              title={slice.points[0].data.xFormatted}
+              rows={slice.points.map((point) => [
+                <Chip key="chip" color={point.serieColor} />,
+                point.serieId,
+                <strong key="value">
+                  {point.data[`${otherAxis}Formatted`]}
+                </strong>,
+              ])}
+            />
+          )
+        }}
         legends={[
           {
             anchor: 'bottom-right',
