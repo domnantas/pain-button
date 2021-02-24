@@ -213,7 +213,6 @@ export const Success = ({ painTriggers }) => {
         lineWidth={4}
         sliceTooltip={({ slice, axis }) => {
           const otherAxis = axis === 'x' ? 'y' : 'x'
-          console.log(slice)
           return (
             <TableTooltip
               title={slice.points[0].data.xFormatted}
