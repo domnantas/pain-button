@@ -1,4 +1,5 @@
 import { ResponsiveLine } from '@nivo/line'
+import { ResponsiveHeatMap } from '@nivo/heatmap'
 import { TableTooltip } from '@nivo/tooltip'
 import styled from 'styled-components'
 import { format, eachDayOfInterval } from 'date-fns'
@@ -22,8 +23,12 @@ export const Empty = () => <div>Empty</div>
 
 export const Failure = ({ error }) => <div>Error: {error.message}</div>
 
-const ChartWrapper = styled.div`
+const LineWrapper = styled.div`
   height: 400px;
+`
+
+const HeatmapWrapper = styled.div`
+  height: 3000px;
 `
 
 export const Success = ({ painTriggers }) => {
@@ -40,34 +45,6 @@ export const Success = ({ painTriggers }) => {
   const endDate = new Date(sortedTriggers[painTriggers.length - 1].triggeredAt)
   console.log('endDate', endDate)
 
-  // Input
-  // [
-  //   {
-  //     id: 20
-  //     triggeredAt: '2020-12-12'
-  //     pain: {
-  //       id: 1
-  //       title: 'pain1'
-  //     }
-  //   },
-  //   {
-  //     id: 21
-  //     triggeredAt: '2020-12-13'
-  //     pain: {
-  //       id: 2
-  //       title: 'pain2'
-  //     }
-  //   },
-  //   {
-  //     id: 22
-  //     triggeredAt: '2020-12-12'
-  //     pain: {
-  //       id: 1
-  //       title: 'pain1'
-  //     }
-  //   }
-  // ]
-
   const groupedByPainTriggers = sortedTriggers
     .reduce((painGroups, trigger) => {
       // Probably could be refactored to use double reducer
@@ -76,7 +53,9 @@ export const Success = ({ painTriggers }) => {
       )
 
       if (painGroup) {
-        painGroup.data.push({ triggeredAt: trigger.triggeredAt })
+        painGroup.data.push({
+          triggeredAt: format(new Date(trigger.triggeredAt), 'yyyy-MM-dd'),
+        })
         return painGroups
       }
       return [
@@ -84,7 +63,11 @@ export const Success = ({ painTriggers }) => {
         {
           id: trigger.pain.id,
           painTitle: trigger.pain.title,
-          data: [{ triggeredAt: trigger.triggeredAt }],
+          data: [
+            {
+              triggeredAt: format(new Date(trigger.triggeredAt), 'yyyy-MM-dd'),
+            },
+          ],
         },
       ]
     }, [])
@@ -93,43 +76,32 @@ export const Success = ({ painTriggers }) => {
     })
   console.log('groupedByPainTriggers', groupedByPainTriggers)
 
-  // Grouped output
-  // [
-  //   {
-  //     id: 'pain1',
-  //     data: [
-  //       {
-  //         triggeredAt: '2020-12-12'
-  //       },
-  //       {
-  //         triggeredAt: '2020-12-12'
-  //       }
-  //     ]
-  //   },
-  //   {
-  //     id: 'pain2',
-  //     data: [
-  //       {
-  //         triggeredAt: '2020-12-13'
-  //       }
-  //     ]
-  //   }
-  // ]
+  const allDays = eachDayOfInterval({
+    start: startDate,
+    end: endDate,
+  }).map((date) => format(date, 'yyyy-MM-dd'))
 
-  const sumByDayTriggers = groupedByPainTriggers.map((triggerGroup) => {
-    const allDays = eachDayOfInterval({
-      start: startDate,
-      end: endDate,
-    }).map((date) => format(date, 'yyyy-MM-dd'))
+  const sumByPainTriggers = allDays.map((currentDay) => {
+    const currentDayTriggers = groupedByPainTriggers.reduce(
+      (allTriggers, triggerGroup) => {
+        const currentDayTriggerCount = triggerGroup.data.filter(
+          ({ triggeredAt }) => triggeredAt === currentDay
+        ).length
 
-    const triggerGroupFormattedDates = triggerGroup.data.map((trigger) =>
-      format(new Date(trigger.triggeredAt), 'yyyy-MM-dd')
+        return { ...allTriggers, [triggerGroup.id]: currentDayTriggerCount }
+      },
+      {}
     )
 
+    return { date: currentDay, ...currentDayTriggers }
+  })
+  console.log('sumByPainTriggers', sumByPainTriggers)
+
+  const sumByDayTriggers = groupedByPainTriggers.map((triggerGroup) => {
     const groupedByDateTriggers = allDays
       .map((currentDay) => {
-        const currentDayTriggerCount = triggerGroupFormattedDates.filter(
-          (triggerDate) => triggerDate === currentDay
+        const currentDayTriggerCount = triggerGroup.data.filter(
+          ({ triggeredAt }) => triggeredAt === currentDay
         ).length
         return { x: currentDay, y: currentDayTriggerCount }
       })
@@ -137,42 +109,25 @@ export const Success = ({ painTriggers }) => {
 
     return { ...triggerGroup, data: groupedByDateTriggers }
   })
-
   console.log('sumByDayTriggers', sumByDayTriggers)
 
-  // Sum output
-  // [
-  //   {
-  //     id: 'pain1',
-  //     data: [
-  //       {
-  //         x: '2020-12-11',
-  //         y: 0
-  //       },
-  //       {
-  //         x: '2020-12-12',
-  //         y: 2
-  //       }
-  //     ]
-  //   },
-  //   {
-  //     id: 'pain2',
-  //     data: [
-  //       {
-  //         x: '2020-12-11',
-  //         y: 0
-  //       },
-  //       {
-  //         x: '2020-12-12',
-  //         y: 0
-  //       },
-  //       {
-  //         x: '2020-12-13',
-  //         y: 1
-  //       }
-  //     ]
-  //   }
-  // ]
+  // const sumByDayTriggers = allDays.map((currentDay) => {
+  //   const currentDayTriggers = groupedByPainTriggers.reduce(
+  //     (allTriggers, triggerGroup) => {
+  //       const currentDayTriggerCount = triggerGroup.data.filter(
+  //         ({ triggeredAt }) => triggeredAt === currentDay
+  //       ).length
+
+  //       return { ...allTriggers, [triggerGroup.id]: currentDayTriggerCount }
+  //     },
+  //     {}
+  //   )
+
+  //   return { date: currentDay, ...currentDayTriggers }
+  // })
+  // console.log('sumByPainTriggers', sumByPainTriggers)
+
+  const painIds = groupedByPainTriggers.map((triggerGroup) => triggerGroup.id)
 
   const Chip = ({ color }) => (
     <span
@@ -186,73 +141,106 @@ export const Success = ({ painTriggers }) => {
   )
 
   return (
-    <ChartWrapper>
-      <ResponsiveLine
-        margin={{ top: 50, right: 250, bottom: 50, left: 60 }}
-        colors={{ scheme: 'category10' }}
-        animate={true}
-        enableSlices="x"
-        data={sumByDayTriggers}
-        xScale={{
-          type: 'time',
-          format: '%Y-%m-%d',
-          useUTC: false,
-          precision: 'day',
-        }}
-        xFormat="time:%Y-%m-%d"
-        yScale={{
-          type: 'linear',
-          stacked: false,
-        }}
-        axisBottom={{
-          format: '%b %d',
-        }}
-        curve={'monotoneX'}
-        useMesh={true}
-        enablePoints={false}
-        lineWidth={4}
-        sliceTooltip={({ slice, axis }) => {
-          const otherAxis = axis === 'x' ? 'y' : 'x'
-          return (
-            <TableTooltip
-              title={slice.points[0].data.xFormatted}
-              rows={slice.points.map((point) => [
-                <Chip key="chip" color={point.serieColor} />,
-                point.serieId,
-                <strong key="value">
-                  {point.data[`${otherAxis}Formatted`]}
-                </strong>,
-              ])}
-            />
-          )
-        }}
-        legends={[
-          {
-            anchor: 'bottom-right',
-            direction: 'column',
-            justify: false,
-            translateX: 270,
-            translateY: 0,
-            itemsSpacing: 0,
-            itemDirection: 'left-to-right',
-            itemWidth: 250,
-            itemHeight: 20,
-            itemOpacity: 0.75,
-            symbolSize: 12,
-            symbolShape: 'circle',
-            symbolBorderColor: 'rgba(0, 0, 0, .5)',
-            effects: [
-              {
-                on: 'hover',
-                style: {
-                  itemBackground: 'rgba(0, 0, 0, .03)',
-                  itemOpacity: 1,
+    <>
+      <LineWrapper>
+        <ResponsiveLine
+          margin={{ top: 50, right: 250, bottom: 50, left: 60 }}
+          colors={{ scheme: 'category10' }}
+          animate={true}
+          enableSlices="x"
+          data={sumByDayTriggers}
+          xScale={{
+            type: 'time',
+            format: '%Y-%m-%d',
+            useUTC: false,
+            precision: 'day',
+          }}
+          xFormat="time:%Y-%m-%d"
+          yScale={{
+            type: 'linear',
+            stacked: false,
+          }}
+          axisBottom={{
+            format: '%b %d',
+          }}
+          curve={'monotoneX'}
+          useMesh={true}
+          enablePoints={false}
+          lineWidth={4}
+          sliceTooltip={({ slice, axis }) => {
+            const otherAxis = axis === 'x' ? 'y' : 'x'
+            return (
+              <TableTooltip
+                title={slice.points[0].data.xFormatted}
+                rows={slice.points.map((point) => [
+                  <Chip key="chip" color={point.serieColor} />,
+                  point.serieId,
+                  <strong key="value">
+                    {point.data[`${otherAxis}Formatted`]}
+                  </strong>,
+                ])}
+              />
+            )
+          }}
+          legends={[
+            {
+              anchor: 'bottom-right',
+              direction: 'column',
+              justify: false,
+              translateX: 270,
+              translateY: 0,
+              itemsSpacing: 0,
+              itemDirection: 'left-to-right',
+              itemWidth: 250,
+              itemHeight: 20,
+              itemOpacity: 0.75,
+              symbolSize: 12,
+              symbolShape: 'circle',
+              symbolBorderColor: 'rgba(0, 0, 0, .5)',
+              effects: [
+                {
+                  on: 'hover',
+                  style: {
+                    itemBackground: 'rgba(0, 0, 0, .03)',
+                    itemOpacity: 1,
+                  },
                 },
-              },
-            ],
-          },
-        ]}
-      />
-    </ChartWrapper>
+              ],
+            },
+          ]}
+        />
+      </LineWrapper>
+      <HeatmapWrapper>
+        <ResponsiveHeatMap
+          data={sumByPainTriggers}
+          keys={painIds}
+          indexBy="date"
+          colors="reds"
+          margin={{ top: 200, right: 30, bottom: 30, left: 30 }}
+          forceSquare={true}
+          axisTop={{
+            orient: 'top',
+            tickSize: 5,
+            tickPadding: 5,
+            tickRotation: -90,
+          }}
+          axisRight={null}
+          axisBottom={null}
+          axisLeft={{
+            orient: 'left',
+            tickSize: 5,
+            tickPadding: 5,
+            tickRotation: 0,
+          }}
+          cellOpacity={1}
+          animate={true}
+          motionConfig="wobbly"
+          motionStiffness={80}
+          motionDamping={9}
+          hoverTarget="cell"
+          cellHoverOthersOpacity={0.25}
+        />
+      </HeatmapWrapper>
+    </>
   )
 }
