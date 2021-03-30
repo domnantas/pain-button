@@ -28,7 +28,7 @@ const LineWrapper = styled.div`
 `
 
 const HeatmapWrapper = styled.div`
-  height: 3000px;
+  height: 2500px;
 `
 
 export const Success = ({ painTriggers }) => {
@@ -216,13 +216,14 @@ export const Success = ({ painTriggers }) => {
           keys={painIds}
           indexBy="date"
           colors="reds"
+          maxValue={50}
           margin={{ top: 200, right: 30, bottom: 30, left: 30 }}
           forceSquare={true}
           axisTop={{
             orient: 'top',
             tickSize: 5,
             tickPadding: 5,
-            tickRotation: -90,
+            tickRotation: -45,
           }}
           axisRight={null}
           axisBottom={null}
@@ -232,6 +233,7 @@ export const Success = ({ painTriggers }) => {
             tickPadding: 5,
             tickRotation: 0,
           }}
+          labelTextColor="#fff"
           cellOpacity={1}
           animate={true}
           motionConfig="wobbly"
